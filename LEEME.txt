@@ -1,0 +1,70 @@
+BITÁCORA DE OBRA — cómo ponerla a funcionar
+============================================
+
+Es una app web instalable. No necesita APK ni tiendas: se abre desde un
+enlace y se "instala" en el iPhone, en Android y en la computadora.
+
+PROBARLA YA EN LA COMPUTADORA
+-----------------------------
+Doble clic en index.html (se abre en Chrome o Edge). Funciona completa,
+pero los datos quedan solo en ese navegador.
+
+PASO 1 — SUBIRLA A INTERNET (gratis, 5 minutos)
+-----------------------------------------------
+Para usarla en el celular necesita una dirección https.
+1. Entra a https://app.netlify.com/drop y crea una cuenta gratis.
+2. Arrastra la carpeta "bitacora" completa a la página.
+3. Netlify te da un enlace (algo como https://tu-nombre.netlify.app).
+   En "Site settings" puedes cambiarle el nombre.
+4. Abre ese enlace en cada dispositivo e instálala:
+   - iPhone: Safari > Compartir > "Agregar a inicio".
+   - Android: Chrome > menú > "Instalar app".
+   - Computadora: Chrome/Edge > ícono de instalar en la barra de direcciones.
+Una vez abierta la primera vez, funciona sin internet.
+
+PASO 2 — SINCRONIZAR CELULAR Y COMPUTADORA (opcional, gratis)
+-------------------------------------------------------------
+Sin este paso cada dispositivo guarda sus datos por separado y puedes
+pasarlos con "Exportar copia" / "Importar copia".
+Con este paso lo que llenas en el celular aparece solo en la computadora.
+
+1. Entra a https://console.firebase.google.com con tu cuenta de Google
+   y crea un proyecto (no hace falta Analytics).
+2. Menú Compilación > Authentication > Comenzar > activa
+   "Correo electrónico/contraseña".
+3. Menú Compilación > Firestore Database > Crear base de datos
+   (modo producción, cualquier ubicación).
+4. En Firestore > pestaña Reglas, pega esto y pulsa Publicar:
+
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /users/{uid}/{document=**} {
+         allow read, write: if request.auth != null && request.auth.uid == uid;
+       }
+     }
+   }
+
+5. Engranaje > Configuración del proyecto > "Tus apps" > ícono </> (Web)
+   > registra la app > copia el bloque "const firebaseConfig = { ... }".
+6. En la app: Ajustes > Sincronización > pega ese bloque > Conectar.
+   Luego "Crear cuenta" con un correo y contraseña.
+7. En los otros dispositivos: pega el mismo bloque y pulsa "Entrar"
+   con el mismo correo y contraseña.
+
+El indicador de arriba a la derecha muestra el estado: Local,
+Sincronizando, Sincronizado o Sin conexión. Sin internet puedes seguir
+trabajando; se sincroniza al volver la señal.
+
+ACTUALIZAR LA APP
+-----------------
+Si recibes una versión nueva de los archivos, vuelve a arrastrar la
+carpeta a Netlify (pestaña Deploys del sitio). Tus datos no se pierden.
+
+RECOMENDACIONES
+---------------
+- En iPhone instálala en la pantalla de inicio: Safari puede borrar los
+  datos de páginas no instaladas que no se abren por varios días.
+- Si no usas sincronización, exporta una copia del proyecto de vez en
+  cuando (Datos generales > Copia de seguridad).
+- Las facturas y guías se agregan como foto o imagen (no PDF).

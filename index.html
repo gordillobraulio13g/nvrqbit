@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bitácora de Obra</title>
+<meta name="theme-color" content="#1B2559">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bitácora">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{--navy:#1B2559;--navy2:#2B3A7A;--bg:#F1F3F8;--card:#fff;--line:#D9DEEA;--txt:#1A1F36;--mut:#68708A;--ok:#1E8E5A;--warn:#B7791F;--bad:#C0392B;--amber:#F2A93B}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);padding-bottom:env(safe-area-inset-bottom)}
+header{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 12px 10px;display:flex;align-items:center;gap:10px}
+header h1{font-size:17px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:650}
+header button,header a{background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:10px;height:38px;min-width:38px;padding:0 10px;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;cursor:pointer}
+#sync{font-size:12px;padding:0 10px}
+#sync i{width:8px;height:8px;border-radius:50%;background:#9aa3c7;display:inline-block}
+#sync.idle i{background:#4ade80}#sync.syncing i{background:var(--amber)}#sync.error i{background:#f87171}
+main{max-width:780px;margin:0 auto;padding:14px 12px 110px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.row{display:flex;gap:10px;align-items:center}.row>.grow{flex:1;min-width:0}
+.wrap{flex-wrap:wrap}
+.btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--txt);border-radius:11px;padding:11px 14px;font:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;min-height:44px}
+.btn.pri{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn.amber{background:var(--amber);border-color:var(--amber);color:#2b1d00}
+.btn.sm{padding:6px 10px;min-height:34px;font-size:14px;font-weight:550}
+.btn.danger{color:var(--bad)}
+.btn.block{display:flex;width:100%}
+.btn:active{transform:scale(.98)}
+.list a{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:9px;color:inherit;text-decoration:none}
+.list a .t{font-weight:650}.list a .s{color:var(--mut);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list a .grow{min-width:0;flex:1}.list a .chev{color:var(--mut);font-size:20px}
+.badge{background:#E7EAF6;color:var(--navy);border-radius:9px;padding:6px 9px;font-size:13px;font-weight:700;text-align:center;min-width:54px;line-height:1.15}
+.badge small{display:block;font-weight:500;font-size:11px;text-transform:uppercase}
+.empty{text-align:center;color:var(--mut);padding:34px 16px}
+h2{font-size:15px;margin:18px 2px 8px;color:var(--mut);font-weight:650;text-transform:uppercase;letter-spacing:.04em}
+details.sec{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+details.sec>summary{list-style:none;cursor:pointer;background:var(--navy);color:#fff;padding:11px 14px;font-weight:650;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:"▾";opacity:.8}
+details.sec:not([open])>summary::after{content:"▸"}
+details.sec>.body{padding:14px}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:520px){.grid.g3{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.one-sm{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+label.f{display:block;min-width:0}
+label.f>span{display:block;font-size:12.5px;color:var(--mut);font-weight:600;margin-bottom:4px}
+input,textarea,select{width:100%;font:inherit;font-size:16px;color:var(--txt);background:#FAFBFE;border:1px solid var(--line);border-radius:10px;padding:10px 11px;min-height:44px}
+textarea{resize:vertical;display:block;line-height:1.35}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--navy2);outline-offset:-1px;background:#fff}
+.sub{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.03em;margin:16px 0 8px}
+.sub:first-child{margin-top:0}
+.item{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;background:#FCFCFE}
+.item .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px;font-weight:700;color:var(--mut)}
+.x{border:0;background:#F3E3E1;color:var(--bad);border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin:8px 0}
+.thumbs .ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#E5E8F0}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs .x{position:absolute;top:4px;right:4px;width:26px;height:26px;font-size:13px;background:rgba(255,255,255,.92)}
+.filebtn{position:relative;overflow:hidden}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;min-height:0}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:15;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+.bar>div{max-width:780px;margin:0 auto;display:flex;gap:10px;align-items:center}
+#saved{font-size:13px;color:var(--mut);flex:1}
+.mut{color:var(--mut);font-size:13.5px}
+.total{background:#E7EAF6;border-radius:10px;padding:10px 12px;font-weight:700;color:var(--navy);display:flex;justify-content:space-between}
+#modal{position:fixed;inset:0;z-index:50;background:rgba(15,20,45,.55);display:none;align-items:center;justify-content:center;padding:18px}
+#modal.on{display:flex}
+#modal .box{background:#fff;border-radius:16px;padding:20px;max-width:380px;width:100%;text-align:center}
+#modal h3{margin:0 0 6px;font-size:18px}
+#modal .acts{display:grid;gap:9px;margin-top:16px}
+.spin{width:34px;height:34px;border:4px solid #dfe3f0;border-top-color:var(--navy);border-radius:50%;margin:6px auto 12px;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#1A1F36;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+ol.steps{padding-left:20px;margin:8px 0}ol.steps li{margin-bottom:6px}
+code{background:#EEF0F7;border-radius:5px;padding:1px 5px;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <button id="back" aria-label="Volver" hidden>‹</button>
+  <h1 id="title">Bitácora de Obra</h1>
+  <a id="sync" href="#/ajustes" title="Sincronización"><i></i><span>Local</span></a>
+</header>
+<main id="view"></main>
+<div id="modal"><div class="box" id="modalBox"></div></div>
+<div id="toast"></div>
+<script src="excel.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
