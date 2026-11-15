@@ -393,6 +393,16 @@ async function importBackup(file) {
 }
 
 /* ---------- Sincronización (Firebase, opcional) ---------- */
+/* Proyecto Firebase de la bitácora (estos datos son públicos por diseño; la privacidad la dan las reglas de Firestore) */
+const DEFAULT_FB = {
+  apiKey: 'AIzaSyCKbuSouMqCiQuveQJXgQxcrYS9Y2kBWD4',
+  authDomain: 'novarq-bitacora.firebaseapp.com',
+  projectId: 'novarq-bitacora',
+  storageBucket: 'novarq-bitacora.firebasestorage.app',
+  messagingSenderId: '708811818444',
+  appId: '1:708811818444:web:9de923873afd84b59a0969'
+};
+
 const Sync = {
   cfg: null, user: null, state: 'off', msg: '', fs: null, timer: null, running: false, again: false,
   label() { return { off: 'Local', signedout: 'Sin sesión', idle: 'Sincronizado', syncing: 'Sincronizando', offline: 'Sin conexión', error: 'Error' }[this.state]; },
@@ -402,7 +412,9 @@ const Sync = {
     if (location.hash.startsWith('#/ajustes') && !document.activeElement?.matches?.('input,textarea')) render();
   },
   async init() {
-    try { this.cfg = JSON.parse(localStorage.getItem('fbcfg') || 'null'); } catch (e) { this.cfg = null; }
+    const saved = localStorage.getItem('fbcfg');
+    if (saved === 'off') this.cfg = null;
+    else { try { this.cfg = JSON.parse(saved || 'null') || DEFAULT_FB; } catch (e) { this.cfg = DEFAULT_FB; } }
     if (!this.cfg) return this.set('off');
     try {
       for (const f of ['app', 'auth', 'firestore']) await loadScript(`vendor/firebase-${f}-compat.js`);
@@ -545,7 +557,7 @@ document.addEventListener('click', async e => {
       if (!cfg) { toast('No encontré apiKey y projectId en el texto pegado'); break; }
       localStorage.setItem('fbcfg', JSON.stringify(cfg)); await Sync.init(); render(); break;
     }
-    case 'fb-reset': if (confirm('¿Quitar la conexión con Firebase de este dispositivo? Tus datos locales no se borran.')) { localStorage.removeItem('fbcfg'); location.reload(); } break;
+    case 'fb-reset': if (confirm('¿Quitar la conexión con Firebase de este dispositivo? Tus datos locales no se borran.')) { localStorage.setItem('fbcfg', 'off'); location.reload(); } break;
     case 'fb-login': Sync.auth(false); break;
     case 'fb-signup': Sync.auth(true); break;
     case 'fb-logout': await firebase.auth().signOut(); break;

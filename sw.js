@@ -1,5 +1,5 @@
 /* Permite abrir la app sin internet. Cambia la versión al actualizar archivos. */
-const CACHE = 'bitacora-v1';
+const CACHE = 'bitacora-v2';
 const FILES = ['./', 'index.html', 'app.js', 'excel.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png',
   'vendor/exceljs.min.js', 'vendor/firebase-app-compat.js', 'vendor/firebase-auth-compat.js', 'vendor/firebase-firestore-compat.js'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())));
